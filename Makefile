@@ -9,7 +9,7 @@ rules:              ## refresh Blocker/blockerList.json from upstream lists
 icon:
 	python3 scripts/make_icon.py
 
-open: project
+open:
 	open Cardea.xcodeproj
 
 test:               ## unit-test the YouTube ad stripping script
