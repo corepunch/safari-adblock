@@ -42,6 +42,7 @@ targets:
     scheme: {}
     dependencies:
       - target: CardeaBlocker
+      - target: CardeaVideo
       - sdk: SafariServices.framework
 
   CardeaBlocker:
@@ -66,3 +67,32 @@ targets:
         TARGETED_DEVICE_FAMILY: "1,2"
         SKIP_INSTALL: YES
         "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]": Blocker/Blocker.entitlements
+
+  # Optional second extension: removes YouTube video ads with a script.
+  # A content blocker can't do this — YouTube serves ads from the same
+  # domains as the videos. Named without "YouTube" to stay clear of
+  # App Review's trademark rule (5.2.1).
+  CardeaVideo:
+    type: app-extension
+    platform: auto
+    supportedDestinations: [iOS, macOS]
+    sources:
+      - path: VideoExtension
+        excludes: ["*.entitlements", "Resources/**"]
+      - path: VideoExtension/Resources
+        buildPhase: resources
+    info:
+      path: VideoExtension/Info.plist
+      properties:
+        CFBundleDisplayName: Cardea Video
+        NSHumanReadableDescription: Removes ads from YouTube videos in Safari.
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.Safari.web-extension
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).SafariWebExtensionHandler
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.corepunch.cardea.Video
+        PRODUCT_NAME: CardeaVideo
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SKIP_INSTALL: YES
+        "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]": VideoExtension/Video.entitlements

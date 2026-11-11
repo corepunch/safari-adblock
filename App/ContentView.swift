@@ -3,6 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var enabled: Bool?
+    @State private var videoEnabled: Bool?
 
     var body: some View {
         VStack(spacing: 20) {
@@ -22,10 +23,12 @@ struct ContentView: View {
                 instructions
             }
             Spacer()
+            if enabled != nil { videoRow }
         }
         .padding(32)
         .frame(maxWidth: 480)
         .animation(.default, value: enabled)
+        .animation(.default, value: videoEnabled)
         .task { await refresh() }
         // Re-check whenever the user comes back from Settings.
         .onChange(of: scenePhase) { _, phase in
@@ -59,7 +62,35 @@ struct ContentView: View {
         #endif
     }
 
+    /// Optional second switch: ads inside YouTube videos.
+    private var videoRow: some View {
+        HStack(spacing: 12) {
+            Image(systemName: videoEnabled == true ? "play.circle.fill" : "play.circle")
+                .font(.title)
+                .foregroundStyle(videoEnabled == true ? Color.green : Color.secondary)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("YouTube video ads").font(.headline)
+                #if os(macOS)
+                Text(videoEnabled == true ? "Blocked by Cardea Video." : "Optional: turn on Cardea Video and allow it on youtube.com.")
+                    .font(.callout).foregroundStyle(.secondary)
+                #else
+                Text("Optional: in **Safari › Extensions**, turn on **Cardea Video** and allow it on youtube.com.")
+                    .font(.callout).foregroundStyle(.secondary)
+                #endif
+            }
+            Spacer(minLength: 0)
+            #if os(macOS)
+            if videoEnabled != true {
+                Button("Turn On") { Blocker.openSafariSettings(for: Blocker.video) }
+            }
+            #endif
+        }
+        .padding()
+        .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 14))
+    }
+
     private func refresh() async {
-        enabled = await Blocker.isEnabled()
+        enabled = await Blocker.adsEnabled()
+        videoEnabled = await Blocker.videoEnabled()
     }
 }
