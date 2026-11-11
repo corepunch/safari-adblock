@@ -39,6 +39,7 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         TARGETED_DEVICE_FAMILY: "1,2"
         "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]": App/App.entitlements
+    scheme: {}
     dependencies:
       - target: CardeaBlocker
       - sdk: SafariServices.framework
