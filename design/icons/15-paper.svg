@@ -1,2 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024"><defs><filter id="sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="24" stdDeviation="30" flood-opacity=".25"/></filter></defs>
-<rect width="1024" height="1024" fill="#d6cfc4"/><path d="M282 192 H622 L762 332 V832 H282 Z" fill="#fbfaf7" filter="url(#sh)"/><path d="M622 192 V332 H762 Z" fill="#e7e1d6"/></svg>
