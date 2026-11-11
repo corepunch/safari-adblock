@@ -85,6 +85,14 @@ generates a throwaway Xcode project in `Build/xcode` that wraps the same
 folder. Run it, then turn Cardea on in Safari's Extensions settings (on a Mac,
 unsigned builds need *Develop › Allow Unsigned Extensions*).
 
+The converter leaves signing and the app category empty, so `make xcode` fills
+them in afterwards. Put your team ID in a `local.mk` file (git-ignored) to
+have the project signed:
+
+```
+TEAM = ABCDE12345
+```
+
 ## Updating the lists
 
 ```bash

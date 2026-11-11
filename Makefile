@@ -1,3 +1,9 @@
+# Your Apple team ID for signing the local Xcode project. Keep it out of git:
+# put a line "TEAM = ABCDE12345" in local.mk, or pass it as `make xcode TEAM=...`.
+-include local.mk
+TEAM ?=
+CATEGORY ?= public.app-category.utilities
+
 .PHONY: rules check test try zip xcode icon
 
 rules:              ## refresh Extension/rules.json and cosmetic.css from the lists
@@ -21,6 +27,8 @@ zip:                ## Build/Cardea.zip — the file to upload to App Store Conn
 xcode:              ## throwaway Xcode project to run the extension in Safari locally
 	xcrun safari-web-extension-converter Extension --project-location Build/xcode \
 		--app-name Cardea --bundle-identifier com.corepunch.cardea --no-prompt --force
+	python3 scripts/set_build_settings.py Build/xcode/Cardea/Cardea.xcodeproj \
+		DEVELOPMENT_TEAM=$(TEAM) INFOPLIST_KEY_LSApplicationCategoryType=$(CATEGORY)
 
 icon:
 	python3 scripts/make_icon.py
