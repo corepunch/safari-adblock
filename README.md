@@ -53,20 +53,28 @@ often, so expect to update these files from time to time; `make test` runs
 the unit tests in `tests/`. The YouTube app itself can't be touched — this
 covers YouTube in Safari.
 
-## Build
+## Build & release
 
-```bash
-brew install xcodegen
-```
+Open `Cardea.xcodeproj` — no extra tools needed.
 
-```bash
-make open
-```
+1. Select the **Cardea** target › *Signing & Capabilities* and pick your team
+   (do the same for **CardeaBlocker** and **CardeaVideo**). To make it stick
+   across project regenerations, put your team ID in `DEVELOPMENT_TEAM` in
+   `project.yml`.
+2. Pick a destination — **Any iOS Device** or **Any Mac** — then
+   *Product › Archive*. Archive once per platform.
+3. In the Organizer: *Distribute App › App Store Connect › Upload*.
 
-Set your team in *Signing & Capabilities* (or `DEVELOPMENT_TEAM` in
-`project.yml`), pick an iOS or Mac destination, run. To enable it:
+Bump `MARKETING_VERSION` / `CURRENT_PROJECT_VERSION` in `project.yml`
+before each release.
 
-* **Mac:** the app has one button that opens Safari's Extensions settings.
+`project.yml` is the source of truth for the project. After changing it (or
+adding/removing files), run `xcodegen` (`brew install xcodegen`); CI also
+regenerates and commits `Cardea.xcodeproj` on every push.
+
+To enable it:
+
+* **Mac:** the app has a button that opens Safari's Extensions settings.
 * **iPhone/iPad:** Settings › Safari › Extensions › Cardea.
 
 The app checks the state and shows a green check once it's on.
@@ -92,7 +100,7 @@ VideoExtension/      Cardea Video: Safari web extension for YouTube video ads
 tests/               unit tests for the YouTube script (node --test)
 rules/               local allow / cosmetic lists
 scripts/             build_rules.py, make_icon.py, compile_rules.swift
-project.yml          XcodeGen spec (the .xcodeproj is generated)
+project.yml          XcodeGen spec for Cardea.xcodeproj (generated, committed)
 ```
 
 Blocklist data © HaGeZi, used under its license.
