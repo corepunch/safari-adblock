@@ -1,4 +1,4 @@
-// Tests VideoExtension/Resources/page.js against fake YouTube responses.
+// Tests Extension/page.js against fake YouTube responses.
 //   node --test tests/
 const test = require("node:test");
 const assert = require("node:assert");
@@ -6,7 +6,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
 
-const SRC = fs.readFileSync(path.join(__dirname, "../VideoExtension/Resources/page.js"), "utf8");
+const SRC = fs.readFileSync(path.join(__dirname, "../Extension/page.js"), "utf8");
 
 const playerResponse = () => ({
   videoDetails: { videoId: "abc" },

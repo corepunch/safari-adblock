@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Build Blocker/blockerList.json — the one and only Safari content blocker.
+"""Build the generated parts of the extension: Extension/rules.json and
+Extension/cosmetic.css.
 
 Sources:
   * HaGeZi Multi LIGHT (https://github.com/hagezi/dns-blocklists) — ads,
@@ -9,13 +10,15 @@ Sources:
     selectors so blocked ad slots don't leave empty boxes behind.
   * rules/allow.txt — domains never to block (local fixes for false positives).
 
-Rule layout (order matters in Safari):
-  1. block       — one rule per domain, matches the domain and all subdomains.
-  2. ignore-previous-rules for top-frame documents — you can always open any
-     page or follow any (tracking) link; only the things a page *loads* get
-     blocked. This is what lets us ship zero "allowlist" UI.
-  3. allow.txt   — ignore-previous-rules for specific domains.
-  4. css-display-none — after (2), so it isn't cancelled for every page.
+rules.json is a declarativeNetRequest ruleset: one block rule per domain,
+"||domain^", which matches the domain and all its subdomains. The rules name no
+resource types on purpose: such a rule applies to everything a page *loads*
+but never to the page itself, so you can always open any page or follow any
+(tracking) link. That is what lets us ship zero "allowlist" UI.
+
+Don't shorten this to one rule with a "requestDomains" list: Safari turns
+that into a pattern with no end anchor, so "c.net" would also block
+"c.network.com". scripts/check_rules.swift shows what Safari makes of it.
 
 Usage: scripts/build_rules.py [--source FILE]   (default: download)
 """
@@ -27,19 +30,18 @@ import sys
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-OUT = ROOT / "Blocker" / "blockerList.json"
+EXT = ROOT / "Extension"
+RULES = EXT / "rules.json"
+CSS = EXT / "cosmetic.css"
 SOURCE_URL = ("https://raw.githubusercontent.com/hagezi/dns-blocklists/"
               "main/wildcard/light-onlydomains.txt")
 
-# Safari's per-content-blocker limit (Safari 15+ / iOS 15+). Stay well under it.
+# Safari compiles the ruleset into a content blocker, which holds at most
+# 150,000 rules. Stay well under it.
 SAFARI_RULE_LIMIT = 150_000
 BUDGET = 140_000
 
 DOMAIN_RE = re.compile(r"^(?=.{1,253}$)([a-z0-9_](?:[a-z0-9_-]{0,61}[a-z0-9])?\.)+[a-z][a-z0-9-]{0,62}$")
-# Scheme, optional subdomains, the domain, then port or path. Every rule shares
-# the same prefix, which WebKit's compiler merges into one automaton.
-URL_PREFIX = r"^[^:]+://+([^:/]+\.)?"
-URL_SUFFIX = r"[:/]"
 
 
 def read_list(text):
@@ -47,10 +49,6 @@ def read_list(text):
         line = line.split("#", 1)[0].strip().lower()
         if line:
             yield line
-
-
-def url_filter(domain):
-    return URL_PREFIX + re.escape(domain).replace(r"\-", "-") + URL_SUFFIX
 
 
 def collapse(domains):
@@ -85,27 +83,20 @@ def main():
     domains = [d for d in collapse(domains)
                if d not in allow and not any(d.endswith("." + a) for a in allow)]
 
-    fixed = 1 + len(allow) + (1 if selectors else 0)
-    if len(domains) + fixed > BUDGET:
+    if len(domains) > BUDGET:
         sys.exit(f"{len(domains)} domains exceed the {BUDGET} rule budget")
+    assert len(domains) <= SAFARI_RULE_LIMIT
 
-    rules = [{"trigger": {"url-filter": url_filter(d)}, "action": {"type": "block"}}
-             for d in domains]
-    rules.append({
-        "trigger": {"url-filter": ".*", "resource-type": ["document"], "load-context": ["top-frame"]},
-        "action": {"type": "ignore-previous-rules"},
-    })
-    for d in sorted(allow):
-        rules.append({"trigger": {"url-filter": ".*", "if-domain": ["*" + d]},
-                      "action": {"type": "ignore-previous-rules"}})
-    if selectors:
-        rules.append({"trigger": {"url-filter": ".*"},
-                      "action": {"type": "css-display-none", "selector": ", ".join(selectors)}})
+    rules = [{"id": i, "action": {"type": "block"}, "condition": {"urlFilter": f"||{d}^"}}
+             for i, d in enumerate(domains, 1)]
+    RULES.write_text(json.dumps(rules, separators=(",", ":")) + "\n")
 
-    assert len(rules) <= SAFARI_RULE_LIMIT
-    OUT.write_text(json.dumps(rules, separators=(",", ":")) + "\n")
-    print(f"{len(rules)} rules ({len(domains)} domains, {len(selectors)} selectors) "
-          f"-> {OUT.relative_to(ROOT)} ({OUT.stat().st_size / 1e6:.1f} MB)")
+    # One invalid selector would void a shared rule, so each gets its own.
+    CSS.write_text("/* Generated from rules/cosmetic.txt by scripts/build_rules.py. */\n"
+                   + "".join(f"{sel} {{ display: none !important; }}\n" for sel in selectors))
+
+    print(f"{len(rules)} rules -> {RULES.relative_to(ROOT)} ({RULES.stat().st_size / 1e6:.1f} MB), "
+          f"{len(selectors)} selectors -> {CSS.relative_to(ROOT)}")
 
 
 if __name__ == "__main__":

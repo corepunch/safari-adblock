@@ -9,32 +9,20 @@ on:
 jobs:
   build:
     runs-on: macos-15
-    timeout-minutes: 30
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
 
-      - name: Toolchain
-        run: |
-          xcodebuild -version
-          brew install xcodegen
+      - name: Test YouTube ad stripping
+        run: make test
 
-      - name: Test YouTube ad stripping (Cardea Video)
-        run: node --test tests/*.test.js
+      - name: Check the rules with Safari's translator and compiler
+        run: make check
 
-      - name: Compile block list with WebKit
-        run: swift scripts/compile_rules.swift Blocker/blockerList.json
+      - name: Package the extension
+        run: make zip
 
-      - name: Generate project
-        run: xcodegen
-
-      - name: Build for macOS
-        run: |
-          xcodebuild -project Cardea.xcodeproj -scheme Cardea \
-            -destination 'generic/platform=macOS' \
-            CODE_SIGNING_ALLOWED=NO -quiet build
-
-      - name: Build for iOS Simulator
-        run: |
-          xcodebuild -project Cardea.xcodeproj -scheme Cardea \
-            -destination 'generic/platform=iOS Simulator' \
-            CODE_SIGNING_ALLOWED=NO -quiet build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Cardea
+          path: .build/Cardea.zip

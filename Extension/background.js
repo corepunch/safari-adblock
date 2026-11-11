@@ -2,7 +2,7 @@
 // supports world: "MAIN" for dynamically registered scripts; the static
 // manifest key is not guaranteed, so we register here.
 const SCRIPT = {
-  id: "cardea-video-page",
+  id: "cardea-youtube-page",
   matches: ["*://*.youtube.com/*", "*://youtube.com/*", "*://*.youtube-nocookie.com/*"],
   js: ["page.js"],
   runAt: "document_start",
