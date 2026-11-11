@@ -1,5 +1,5 @@
 # Generate the Xcode project with:  xcodegen   (brew install xcodegen)
-name: Plain
+name: Cardea
 options:
   bundleIdPrefix: com.corepunch
   createIntermediateGroups: true
@@ -18,7 +18,7 @@ settings:
     DEAD_CODE_STRIPPING: YES
 
 targets:
-  Plain:
+  Cardea:
     type: application
     platform: auto
     supportedDestinations: [iOS, macOS]
@@ -28,10 +28,10 @@ targets:
       - path: Resources
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.corepunch.plain
-        PRODUCT_NAME: Plain
+        PRODUCT_BUNDLE_IDENTIFIER: com.corepunch.cardea
+        PRODUCT_NAME: Cardea
         GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_CFBundleDisplayName: Plain
+        INFOPLIST_KEY_CFBundleDisplayName: Cardea
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.utilities
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
@@ -40,10 +40,10 @@ targets:
         TARGETED_DEVICE_FAMILY: "1,2"
         "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]": App/App.entitlements
     dependencies:
-      - target: PlainBlocker
+      - target: CardeaBlocker
       - sdk: SafariServices.framework
 
-  PlainBlocker:
+  CardeaBlocker:
     type: app-extension
     platform: auto
     supportedDestinations: [iOS, macOS]
@@ -53,15 +53,15 @@ targets:
     info:
       path: Blocker/Info.plist
       properties:
-        CFBundleDisplayName: Plain
+        CFBundleDisplayName: Cardea
         NSHumanReadableDescription: Blocks ads and trackers in Safari.
         NSExtension:
           NSExtensionPointIdentifier: com.apple.Safari.content-blocker
           NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ContentBlockerRequestHandler
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.corepunch.plain.Blocker
-        PRODUCT_NAME: PlainBlocker
+        PRODUCT_BUNDLE_IDENTIFIER: com.corepunch.cardea.Blocker
+        PRODUCT_NAME: CardeaBlocker
         TARGETED_DEVICE_FAMILY: "1,2"
         SKIP_INSTALL: YES
         "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]": Blocker/Blocker.entitlements
