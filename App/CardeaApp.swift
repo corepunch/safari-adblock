@@ -10,7 +10,7 @@ struct CardeaApp: App {
         #if os(macOS)
         Window("Cardea", id: "main") {
             ContentView()
-                .frame(width: 420, height: 460)
+                .frame(width: 440, height: 540)
         }
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)

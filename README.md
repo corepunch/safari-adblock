@@ -34,6 +34,25 @@ Cardea is a pure [content blocker](https://developer.apple.com/documentation/saf
   what makes an allowlist UI unnecessary.
 * Cosmetic selectors (`rules/cosmetic.txt`) are deliberately few and specific.
 
+## YouTube video ads (Cardea Video)
+
+A content blocker can't stop YouTube video ads: they come from the same
+domains as the videos. So Cardea ships a second, optional Safari extension,
+**Cardea Video**, that only runs on youtube.com:
+
+* `page.js` runs inside YouTube's page before the player starts and deletes
+  the ad schedule (`adPlacements`, `playerAds`, `adSlots`) from every player
+  response — inline data, `fetch` and `XMLHttpRequest` — plus ad entries in
+  the Shorts feed. The player then believes the video has no ads.
+* `content.js` is a safety net: if an ad still starts (e.g. one stitched into
+  the stream), it mutes it, jumps to its end and presses Skip.
+* `youtube.css` hides ad boxes in feeds, search and the watch page.
+
+It asks Safari for access to youtube.com only. YouTube changes its player
+often, so expect to update these files from time to time; `make test` runs
+the unit tests in `tests/`. The YouTube app itself can't be touched — this
+covers YouTube in Safari.
+
 ## Build
 
 ```bash
@@ -69,8 +88,10 @@ Ship a new build to deliver it.
 ```
 App/                 SwiftUI app: status + one button, nothing else
 Blocker/             content blocker extension + generated blockerList.json
+VideoExtension/      Cardea Video: Safari web extension for YouTube video ads
+tests/               unit tests for the YouTube script (node --test)
 rules/               local allow / cosmetic lists
-scripts/             build_rules.py, make_icon.py
+scripts/             build_rules.py, make_icon.py, compile_rules.swift
 project.yml          XcodeGen spec (the .xcodeproj is generated)
 ```
 

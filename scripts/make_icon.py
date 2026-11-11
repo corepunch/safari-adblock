@@ -3,7 +3,9 @@
 import json, pathlib
 from PIL import Image, ImageDraw
 
-OUT = pathlib.Path(__file__).resolve().parent.parent / "Resources/Assets.xcassets/AppIcon.appiconset"
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+OUT = ROOT / "Resources/Assets.xcassets/AppIcon.appiconset"
+VIDEO = ROOT / "VideoExtension/Resources"
 S = 2048                       # draw at 2x of 1024 and downsample for antialiasing
 TOP, BOT = (64, 200, 160), (20, 120, 140)   # #40c8a0 -> #14788c, top to bottom
 CHECK = (20, 120, 140)
@@ -23,7 +25,7 @@ def shield(k, cx, cy):
     return [(cx + (x - 512) * k, cy + (y - 512) * k) for x, y in pts]
 
 
-def render(size, mac):
+def render(size, mac, glyph="check"):
     img = Image.new("RGBA", (S, S), (0, 0, 0, 0))
     grad = Image.new("RGBA", (S, S))
     px = grad.load()
@@ -42,12 +44,16 @@ def render(size, mac):
         k = S / 1024
     d = ImageDraw.Draw(img)
     d.polygon(shield(k, S / 2, S / 2), fill="white")
-    check = [(400, 520), (485, 605), (640, 440)]
-    pts = [(S / 2 + (x - 512) * k, S / 2 + (y - 512) * k) for x, y in check]
-    w = int(64 * k)
-    d.line(pts, fill=CHECK, width=w, joint="curve")
-    for x, y in (pts[0], pts[-1]):
-        d.ellipse([x - w / 2, y - w / 2, x + w / 2, y + w / 2], fill=CHECK)
+    if glyph == "play":   # Cardea Video: play triangle instead of the check
+        tri = [(450, 410), (450, 620), (622, 515)]
+        d.polygon([(S / 2 + (x - 512) * k, S / 2 + (y - 512) * k) for x, y in tri], fill=CHECK)
+    else:
+        check = [(400, 520), (485, 605), (640, 440)]
+        pts = [(S / 2 + (x - 512) * k, S / 2 + (y - 512) * k) for x, y in check]
+        w = int(64 * k)
+        d.line(pts, fill=CHECK, width=w, joint="curve")
+        for x, y in (pts[0], pts[-1]):
+            d.ellipse([x - w / 2, y - w / 2, x + w / 2, y + w / 2], fill=CHECK)
     return img.resize((size, size), Image.LANCZOS)
 
 
@@ -64,3 +70,8 @@ for pt in (16, 32, 128, 256, 512):
         images.append({"filename": name, "idiom": "mac", "scale": f"{sc}x", "size": f"{pt}x{pt}"})
 (OUT / "Contents.json").write_text(json.dumps({"images": images, "info": {"author": "xcode", "version": 1}}, indent=2) + "\n")
 (OUT.parent / "Contents.json").write_text(json.dumps({"info": {"author": "xcode", "version": 1}}, indent=2) + "\n")
+
+# Cardea Video web extension icons (shown in Safari's extension list/toolbar).
+video = render(512, True, glyph="play")
+for px in (48, 96, 128, 256, 512):
+    video.resize((px, px), Image.LANCZOS).save(VIDEO / f"icon-{px}.png")
