@@ -54,11 +54,15 @@ can't be touched — this covers YouTube in Safari.
 ## Website access
 
 Because it is a web extension, Safari asks the user to allow Cardea on
-websites. The cosmetic rules and the YouTube script only work on sites where
-that is allowed, so the first-run advice is **Always Allow on Every Website**.
-If you would rather ask for youtube.com only, drop the first `content_scripts`
-entry and narrow `host_permissions` in `Extension/manifest.json`; you lose the
-cosmetic rules.
+websites. Network blocking works either way. The cosmetic rules and the
+YouTube script only work on sites where access is allowed, so the first-run
+advice is **Always Allow on Every Website**. If you would rather ask for
+youtube.com only, drop the first `content_scripts` entry and narrow
+`host_permissions` in `Extension/manifest.json`; you lose the cosmetic rules.
+
+`make try` shows this on a live page: it loads the extension into a WebKit
+web view and reports which requests get blocked (`make try ARGS=--no-access`
+for the case where access was not granted).
 
 ## Release
 
@@ -100,7 +104,7 @@ translator and compiler Safari uses. Ship a new build to deliver them.
 Extension/           the extension: manifest, scripts, icons, generated rules
 tests/               unit tests for the YouTube script (node --test)
 rules/               local allow / cosmetic lists
-scripts/             build_rules.py, check_rules.swift, make_icon.py
+scripts/             build_rules.py, check_rules.swift, try_in_webkit.swift, make_icon.py
 ```
 
 Blocklist data © HaGeZi, used under its license.

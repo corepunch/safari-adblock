@@ -1,4 +1,4 @@
-.PHONY: rules check test zip xcode icon
+.PHONY: rules check test try zip xcode icon
 
 rules:              ## refresh Extension/rules.json and cosmetic.css from the lists
 	python3 scripts/build_rules.py
@@ -8,6 +8,10 @@ check:              ## run the rules through Safari's translator and compiler
 
 test:               ## unit-test the YouTube ad stripping script
 	node --test tests/*.test.js
+
+try:                ## load the extension into WebKit and probe a live page (needs network)
+	mkdir -p .build && swiftc -O scripts/try_in_webkit.swift -o .build/try
+	.build/try $(ARGS)
 
 zip:                ## .build/Cardea.zip — the file to upload to App Store Connect
 	mkdir -p .build && rm -f .build/Cardea.zip
