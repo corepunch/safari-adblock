@@ -1,0 +1,42 @@
+! Generic element hiding, applied on every site as a single rule.
+! Keep this list short and specific: a selector that is too broad hides real
+! content, and there is no UI to undo it. Every line must be valid CSS —
+! one invalid selector invalidates the whole rule.
+
+! Google AdSense / Ad Manager
+ins.adsbygoogle
+.adsbygoogle
+[id^="div-gpt-ad"]
+[id^="google_ads_iframe"]
+[id^="google_ads_frame"]
+[data-google-query-id]
+.GoogleActiveViewElement
+iframe[src*="googlesyndication.com"]
+iframe[src*="doubleclick.net"]
+amp-ad
+amp-sticky-ad
+amp-embed[type="taboola"]
+amp-embed[type="outbrain"]
+
+! "Around the web" content farms
+.trc_rbox_container
+.trc-content-sponsored
+[id^="taboola-"]
+.OUTBRAIN
+.ob-widget
+[data-widget-id][class*="outbrain"]
+.mgbox
+[id^="ScriptRootC"]
+.revcontent
+
+! Common ad network containers
+#carbonads
+.carbonads
+.adthrive-ad
+.adthrive-video-player
+[id^="ezoic-pub-ad-placeholder"]
+.ezoic-ad
+[id^="ad_position_"]
+.mv-ad-box
+.raptive-ad
+.ad-slot--rendered
