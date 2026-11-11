@@ -1,0 +1,45 @@
+# Regenerates Cardea.xcodeproj from project.yml on a Mac and commits it back,
+# so the committed project always matches the spec.
+name: Sync Xcode project
+
+on:
+  push:
+    paths:
+      - project.yml
+      - App/**
+      - Blocker/**
+      - VideoExtension/**
+      - Resources/**
+      - .github/workflows/xcodeproj.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: xcodeproj-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Generate project
+        run: |
+          brew install xcodegen
+          xcodegen
+
+      - name: Commit if changed
+        run: |
+          git add -A Cardea.xcodeproj App/Info.plist Blocker/Info.plist VideoExtension/Info.plist
+          if git diff --cached --quiet; then
+            echo "Project already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Regenerate Cardea.xcodeproj from project.yml"
+          git push

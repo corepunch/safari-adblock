@@ -1,4 +1,6 @@
-# Generate the Xcode project with:  xcodegen   (brew install xcodegen)
+# Source of truth for Cardea.xcodeproj. After editing, regenerate with
+#   xcodegen          (brew install xcodegen)
+# CI also regenerates and commits the project on every push.
 name: Cardea
 options:
   bundleIdPrefix: com.corepunch
@@ -24,8 +26,13 @@ targets:
     supportedDestinations: [iOS, macOS]
     sources:
       - path: App
-        excludes: ["*.entitlements"]
+        excludes: ["*.entitlements", "Info.plist"]
       - path: Resources
+    info:
+      path: App/Info.plist
+      properties:
+        # No custom encryption: skips the export-compliance question on upload.
+        ITSAppUsesNonExemptEncryption: false
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.corepunch.cardea
@@ -51,7 +58,7 @@ targets:
     supportedDestinations: [iOS, macOS]
     sources:
       - path: Blocker
-        excludes: ["*.entitlements"]
+        excludes: ["*.entitlements", "Info.plist"]
     info:
       path: Blocker/Info.plist
       properties:
@@ -78,7 +85,7 @@ targets:
     supportedDestinations: [iOS, macOS]
     sources:
       - path: VideoExtension
-        excludes: ["*.entitlements", "Resources/**"]
+        excludes: ["*.entitlements", "Info.plist", "Resources/**"]
       - path: VideoExtension/Resources
         buildPhase: resources
     info:
