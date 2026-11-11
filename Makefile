@@ -1,6 +1,6 @@
 .PHONY: project rules icon open
 
-project:            ## generate Plain.xcodeproj
+project:            ## generate Cardea.xcodeproj
 	xcodegen
 
 rules:              ## refresh Blocker/blockerList.json from upstream lists
@@ -10,4 +10,4 @@ icon:
 	python3 scripts/make_icon.py
 
 open: project
-	open Plain.xcodeproj
+	open Cardea.xcodeproj

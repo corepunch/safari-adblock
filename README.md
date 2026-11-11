@@ -1,4 +1,6 @@
-# Plain — a quiet ad blocker for Safari
+# Cardea — Content Blocker for Safari
+
+Named after the Roman goddess of doorways, who kept harmful spirits out of the home.
 
 One switch in Safari. No "Blocklist 1–4", no "Extra", no help popovers, no
 toolbar button, no account, no settings. Turn it on once and forget it exists.
@@ -7,11 +9,11 @@ Runs on **iOS / iPadOS 17+** and **macOS 14+** from a single multiplatform targe
 
 ## Why it's fast
 
-Plain is a pure [content blocker](https://developer.apple.com/documentation/safariservices/creating-a-content-blocker):
+Cardea is a pure [content blocker](https://developer.apple.com/documentation/safariservices/creating-a-content-blocker):
 
 * The rule list is compiled **at build time** and shipped inside the extension.
   Safari compiles it to bytecode once (on install/update) and matches every
-  request natively, inside WebKit. Plain never sees your traffic, injects no
+  request natively, inside WebKit. Cardea never sees your traffic, injects no
   JavaScript and runs no code while you browse.
 * All ~88k domain rules share one URL prefix
   (`^[^:]+://+([^:/]+\.)?<domain>[:/]`), so WebKit folds them into a single
@@ -19,7 +21,7 @@ Plain is a pure [content blocker](https://developer.apple.com/documentation/safa
 * Element hiding is **one** `css-display-none` rule with grouped selectors —
   the form Apple recommends.
 * Everything fits in **one** extension (Safari allows 150,000 rules each), so
-  Safari shows a single "Plain" entry.
+  Safari shows a single "Cardea" entry.
 
 ## Why it doesn't break things
 
@@ -46,7 +48,7 @@ Set your team in *Signing & Capabilities* (or `DEVELOPMENT_TEAM` in
 `project.yml`), pick an iOS or Mac destination, run. To enable it:
 
 * **Mac:** the app has one button that opens Safari's Extensions settings.
-* **iPhone/iPad:** Settings › Safari › Extensions › Plain.
+* **iPhone/iPad:** Settings › Safari › Extensions › Cardea.
 
 The app checks the state and shows a green check once it's on.
 

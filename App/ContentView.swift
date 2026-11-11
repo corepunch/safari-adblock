@@ -14,11 +14,11 @@ struct ContentView: View {
 
             if enabled == true {
                 Text("Ads are blocked").font(.title.bold())
-                Text("That's it. Plain works inside Safari on its own —\nyou can close this window.")
+                Text("That's it. Cardea works inside Safari on its own —\nyou can close this window.")
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
             } else if enabled == false {
-                Text("Turn on Plain in Safari").font(.title.bold())
+                Text("Turn on Cardea in Safari").font(.title.bold())
                 instructions
             }
             Spacer()
@@ -40,7 +40,7 @@ struct ContentView: View {
 
     @ViewBuilder private var instructions: some View {
         #if os(macOS)
-        Text("Check the box next to Plain in Safari's Extensions settings.")
+        Text("Check the box next to Cardea in Safari's Extensions settings.")
             .multilineTextAlignment(.center)
             .foregroundStyle(.secondary)
         Button("Open Safari Settings") { Blocker.openSafariSettings() }
@@ -51,7 +51,7 @@ struct ContentView: View {
         VStack(alignment: .leading, spacing: 10) {
             Label("Open the **Settings** app", systemImage: "1.circle.fill")
             Label("Go to **Safari › Extensions**", systemImage: "2.circle.fill")
-            Label("Tap **Plain** and turn it on", systemImage: "3.circle.fill")
+            Label("Tap **Cardea** and turn it on", systemImage: "3.circle.fill")
         }
         .font(.body)
         .padding()

@@ -1,14 +1,14 @@
 import SwiftUI
 
 @main
-struct PlainApp: App {
+struct CardeaApp: App {
     #if os(macOS)
     @NSApplicationDelegateAdaptor private var delegate: AppDelegate
     #endif
 
     var body: some Scene {
         #if os(macOS)
-        Window("Plain", id: "main") {
+        Window("Cardea", id: "main") {
             ContentView()
                 .frame(width: 420, height: 460)
         }
