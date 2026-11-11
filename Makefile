@@ -10,16 +10,16 @@ test:               ## unit-test the YouTube ad stripping script
 	node --test tests/*.test.js
 
 try:                ## load the extension into WebKit and probe a live page (needs network)
-	mkdir -p .build && swiftc -O scripts/try_in_webkit.swift -o .build/try
-	.build/try $(ARGS)
+	mkdir -p Build && swiftc -O scripts/try_in_webkit.swift -o Build/try
+	Build/try $(ARGS)
 
-zip:                ## .build/Cardea.zip — the file to upload to App Store Connect
-	mkdir -p .build && rm -f .build/Cardea.zip
-	cd Extension && zip -qr -X ../.build/Cardea.zip . -x '.*'
-	@du -h .build/Cardea.zip
+zip:                ## Build/Cardea.zip — the file to upload to App Store Connect
+	mkdir -p Build && rm -f Build/Cardea.zip
+	cd Extension && zip -qr -X ../Build/Cardea.zip . -x '.*'
+	@du -h Build/Cardea.zip
 
 xcode:              ## throwaway Xcode project to run the extension in Safari locally
-	xcrun safari-web-extension-converter Extension --project-location .build/xcode \
+	xcrun safari-web-extension-converter Extension --project-location Build/xcode \
 		--app-name Cardea --bundle-identifier com.corepunch.cardea --no-prompt --force
 
 icon:

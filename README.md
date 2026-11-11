@@ -70,7 +70,7 @@ for the case where access was not granted).
 make zip
 ```
 
-writes `.build/Cardea.zip`. In App Store Connect create the app record (macOS,
+writes `Build/Cardea.zip`. In App Store Connect create the app record (macOS,
 iOS or both), upload the ZIP in the Safari Web Extension Packager section,
 test the build through TestFlight, then submit it. Bump `version` in
 `Extension/manifest.json` before each release.
@@ -81,7 +81,7 @@ test the build through TestFlight, then submit it. Bump `version` in
 make xcode
 ```
 
-generates a throwaway Xcode project in `.build/xcode` that wraps the same
+generates a throwaway Xcode project in `Build/xcode` that wraps the same
 folder. Run it, then turn Cardea on in Safari's Extensions settings (on a Mac,
 unsigned builds need *Develop › Allow Unsigned Extensions*).
 
